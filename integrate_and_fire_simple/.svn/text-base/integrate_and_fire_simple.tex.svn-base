@@ -1,0 +1,69 @@
+\documentclass[11pt]{article}
+\usepackage{setspace}
+\usepackage{pxfonts}
+\usepackage{graphicx}
+\usepackage{geometry}
+
+\geometry{letterpaper,left=.5in,right=.5in,top=0in,bottom=.75in,headsep=5pt,footskip=20pt}
+
+\title{Problem Set 3 -- Integrate-and-fire neuron model}
+\author{Computational Neuroscience Summer Program}
+\date{June, 2011}
+
+\begin{document}
+\maketitle
+
+In this problem set you will be building a simple integrate-and-fire
+neuron.  You should assume a specific membrane capacitance of
+$c_m = 10$ nF/mm\textsuperscript{2}, a specific membrane resistance of
+$r_m = 1$ M$\Omega\cdot$mm\textsuperscript{2}, a resting membrane
+potential of $E = -70$ mV, a reset potential of $V_{reset} = -80$ mV,
+an action potential threshold of $V_{threshold} = -55$ mV, and a cell
+surface area of $A = 0.025$ mm\textsuperscript{2}.  Write up your results in
+a text editor of your choosing.  Include any relevant figures, your
+Matlab code, and any other calculations related to the problem set.  You may work individually or in groups, but each student should hand in their own report.
+
+\subsection*{Equations}
+
+\begin{center}
+\begin{tabular}{ll}
+$C_m = A \cdot c_m$ & $R_m = \frac{r_m}{A}$\tabularnewline
+$\tau_m = c_m \cdot r_m$ & $V_\infty = E + R_mI_{ext}$\tabularnewline
+$V(t) = V_\infty + (V(0) - V_\infty)e^\frac{-t}{\tau_m}$ & $r_{isi} =
+(\tau_m \mathrm{ln}(\frac{R_mI_{ext} + E - V_{reset}}{R_mI_{ext} + E -
+  V_{threshold}}))^{-1}$\tabularnewline
+$\tau_m\frac{dV}{dt} = E - V(t-1) + R_mI_{ext}$ & \tabularnewline
+\end{tabular}
+\end{center}
+
+\subsection*{Problems}
+
+\paragraph{1.} Model an integrate-and-fire neuron using the equations
+above and the following rule: when the neuron's membrane voltage exceeds
+$V_{threshold}$, set the voltage in that timestep to $V_{peak} = 40$ mV, and in the
+next timestep set the voltage to $V_{reset}$.  Set $dt = 0.1$ ms.  Apply a square pulse of
+0.5 nA from $t = 250$ ms until $t = 750$ ms in your simulation.  Use
+Matlab's subplot command to plot the membrane voltage over time in the
+top panel and $I_{ext}$ in the bottom panel (use the same time scale
+for the horizontal axis of both plots).  No text is required for this
+question; just include a plot.
+
+\paragraph{2.} Compute the average firing rate (spikes per second) of the integrate-and-fire neuron
+for the pulse interval you used in quesion 1 (500 ms).  Now plot simulated firing rate vs $r_{isi}$ for several values of $I_{ext}$ (use $I_{ext}$ between 0 and 1 nA).  How does the firing rate of the modeled neuron compare to the estimated firing
+rate given by $r_{isi}$?  Note: the equation for $r_{isi}$ only holds if $V_\infty > V_{thresh}$; otherwise, $r_{isi} = 0$.
+
+\paragraph{3.}  Starting from 0 nA, gradually increase the amount of external current
+injected into the integrate-and-fire neuron in steps of 0.01 nA.  Keep the pulse duration constant at 500 ms.  What is the smallest amount of current you
+can inject which will still result in an action potential?  Is there a
+maximum firing rate this neuron can achieve?  Why or why not?
+
+\paragraph{4.  Challenge problem.} Compute firing rate as a function of pulse duration, $I_{duration}$, using 20 durations between 10 and 500 ms.  Repeat this for several different values of $I_{ext}$ (try using 10 log-spaced values between 0.1 and 5 nA).  Explain what you see.  In particular, are the firing rate curves smooth or jagged?  Why?
+
+\paragraph{5.} Vary the resting potential, specific
+capacitance, specific resistance, and surface area variables.  How do
+increases or decreases in these values affect firing rate of the integrate-and-fire neuron?  Explain
+(try to stay at or under 1-2 sentences per variable).  Include plots for each of these variables.
+
+
+\end{document}
+

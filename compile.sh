@@ -1,0 +1,13 @@
+#!/bin/bash
+
+pdflatex syllabus
+pdflatex basic_calculations/basic_calculations_lecture
+pdflatex basic_calculations/basic_calculations
+pdflatex integrate_and_fire_simple/integrate_and_fire_simple_lecture
+pdflatex integrate_and_fire_simple/integrate_and_fire_simple
+pdflatex hodgkin_huxley_simple/hodgkin_huxley_simple_lecture
+pdflatex hodgkin_huxley_simple/hodgkin_huxley_simple
+pdflatex hodgkin_huxley_advanced/hodgkin_huxley_advanced_lecture
+pdflatex hodgkin_huxley_advanced/hodgkin_huxley_advanced
+
+pdflatex main

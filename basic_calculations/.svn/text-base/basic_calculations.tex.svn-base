@@ -1,0 +1,49 @@
+\documentclass[11pt]{article}
+\usepackage{setspace}
+\usepackage{pxfonts}
+\usepackage{graphicx}
+\usepackage{geometry}
+
+\geometry{letterpaper,left=.5in,right=.5in,top=0in,bottom=.75in,headsep=5pt,footskip=20pt}
+
+\title{Problem Set 2 -- Introduction to computational modeling}
+\author{Computational Neuroscience Summer Program}
+\date{June, 2011}
+
+\begin{document}
+\maketitle
+
+In this problem set you will be exploring the relation between several fundamental neuronal properties.  For all problems, you should assume a specific membrane capacitance of $c_m = 10$ nF/mm\textsuperscript{2}, a specific membrane resistance of $r_m = 1$ M$\Omega\cdot$mm\textsuperscript{2}, and a resting membrane potential of $E = -70$ mV.  You should perform all calculations for a variety of cell surface areas (use realistic values -- between 0.01 and 0.1 mm\textsuperscript{2}).  Write up your results in a text editor of your choosing.  Include any relevant figures.  Each question can be answered in 1-2 sentences.  Include a printout of your Matlab code as well as any calculations that aren't in the code.  You may work individually or in groups, but each student should hand in their own report.
+
+\subsection*{Equations}
+
+\begin{center}
+\begin{tabular}{ll}
+$C_m = A \cdot c_m$ & $R_m = \frac{r_m}{A}$\tabularnewline
+$\tau_m = c_m \cdot r_m$ & $V_\infty = E + R_mI_{ext}$\tabularnewline
+$V(t) = V_\infty + (V(0) - V_\infty)e^\frac{-t}{\tau_m}$ & \tabularnewline
+\end{tabular}
+\end{center}
+
+\subsection*{Problems}
+
+\paragraph{1.}  Plot (seperately) total membrane capacitance ($C_m$) and total membrane resistance ($R_m$) as a function of cell surface area ($A$).  Your graph should include appropriate units.  Briefly describe the relation between $C_m$, $R_m$, and $A$.
+
+\paragraph{2.}  Compute the membrane time constant $\tau_m$.  What does $\tau_m$ mean in terms of the neuron?
+
+\paragraph{3.}  How much external electrode current would be required to hold the neuron at the membrane potentials below?
+\[
+V_\infty \in \{-80, -75, -70, -65, -60, -55, -50\}~\mathrm{mV}
+\]
+For each cell surface area (see above) plot the $I_{ext}$ required to hold the neuron at each of the membrane potentials listed.  Use a different color for each surface area, and include a legend in your plot.  In your own words, describe the relation between cell surface area and $I_{ext}$.
+
+\paragraph{4.  Challenge problem.}  Assume an external current of $I_{ext} = 8$ nA.  How much time would it take to reach the membrane potentials below?
+\[
+V_m \in \{-70, -65, -60, -55, -50\}~\mathrm{mV}
+\]
+Repeat your calculations for several cell surface areas (see above).  In your own words, describe the relation between cell surface area and time to reach target voltage.
+
+%\paragraph{5.}  Assume a reset potential of $V_{reset} = -80$ mV and an action potential threshold of $V_{threshold} = -55$ mV.  Plot the expected firing rate $r_{isi}$ as a function of the amount of injected external current $I_{ext}$ (use 5 $I_{ext}$ between 1 and 10 nA).  Plot a seperate curve, in a different color, for for each surface area (see above).  Describe in your own words the relation between surface area, $I_{ext}$, and $r_{isi}$.
+
+\end{document}
+

@@ -1,0 +1,213 @@
+\documentclass[12pt]{article}
+\usepackage{setspace}
+\usepackage{pxfonts}
+\usepackage{graphicx}
+\usepackage{geometry}
+
+\geometry{letterpaper,left=.5in,right=.5in,top=1in,bottom=.75in,headsep=5pt,footskip=20pt}
+
+\title{Lecture 2 -- Introduction to computational modeling}
+\author{Computational Neuroscience Summer Program}
+\date{June, 2011}
+
+\begin{document}
+\maketitle
+
+\paragraph{Motivation.}  This lecture is intended to give students a general intuition for basic mathematical language used to describe and model neurons.  These principles will serve as the foundation for future lectures.
+
+\paragraph{Basic organization of the brain.}  The brain is typically divided into 4 \textit{lobes}.  The \textit{temporal lobe} contains neural machinery for processing speech and sounds, spatial information, and for encoding episodic (autobiographical) memories.  The \textit{parietal lobe} is involved with sensory perception, sensory integration, and memory.  The \textit{frontal lobe} is associated with personality, reasoning, planning, problem solving, working memory, and movement.  The \textit{occipital lobe} is primiarily involved with vision and visual processing.  The \textit{central sulcus} separates the primary motor cortex (frontal lobe) from the primary somatosensory cortex (parietal lobe).  The \textit{medial longitudinal fissure'} separates the right and left hemispheres of the brain.  The \textit{spinal cord} sends signals from the primary motor cortex to the body's skeletal muscles.
+
+\paragraph{Neuron anatomy.}  Neurons are electrically excitable cells in the brain.  Neurons ``listen'' to other cells via branch-like \textit{dendrites}.  Signals from the dendrites travel down to the cell body, or \textit{soma}, which contains the nucleus of the cell.  Neurons communicate with other cells by sending electrical impulses down their \textit{axons}, which most often synapse onto the dendrites of other neurons.
+
+\paragraph{Action potentials.}  Neurons communicate with each other by changes in their membrane voltage (we'll get to what this means in a bit).  Small changes in membrane voltage are picked up by neurons up to approximately 1 mm away.  Thus, for nervous systems on the scale of 1 mm, such as the fruit fly nervous system, no other special mode of communication is needed.  However, in larger nervous systems (e.g. ours), neurons fire action potentials -- sudden changes in voltage.  These form the basic mode of neural communication in the brain.  Over the next few lectures we'll be trying to understand how action potentials come about by modeling neurons in increasing levels of detail.
+
+\paragraph{The neuron as a fluid-filled ball.}  Each $\mu m^3$ of cytoplasm contains on the order of $10^{10}$ water molecules, $10^8$ ions (e.g. sodium, potassium, calcium, chloride), $10^7$ small molecules (e.g. amino acids, nucleic acids), and $10^5$ proteins.  Relative to the extracellular space, the inside of the cell is negatively charged (the difference is carried by about 1 out of every 100,000 ions).  This results in a voltage ($V$) across the membrane of approximately -70 mV.
+
+\paragraph{The neuron as a capacitor.}  Excess negative charges in the cell oppose each other and line up around inside of membrane.  This attracts an equal number of extracellular positive ions, which line up outside the cell.  In this way, the membrane builds up charge -- it's acting as a capacitor!  The amount of charge ($Q$) stored by the membrane is given by the following equation:
+\[
+C_mV = Q
+\]
+English description: the amount of charge stored by the membrane is equal to the ability of the membrane to store charge (i.e., its capacitance) multiplied by the voltage difference across the membrane.  The total membrane capacitance ($C_m$) is proportional to the surface area of the cell ($A$):
+\[
+C_m = c_mA
+\]
+
+Specific capacitance ($c_m$) depends on conductance and thickness of membrane, which is about the same for all neurons -- about 10 nF/mm$^2$.  Neurons typically have a surface area of 0.01 -- 0.1 mm$^2$, so $C_m$ ranges from around 0.1 -- 1 nF.  We can now compute the number of charges stored by a given neuron (we'll assume 1 nF total capacitance and -70 mV membrane potential):
+\[
+1 \mathrm{nF} \times -70 \mathrm{mV} = 10^{-9} \mathrm{F} \times 70 \times 10^{-3} \mathrm{V} = 70 \times 10^{-12} \mathrm{C} = 10^9 \mathrm{charges}.
+\]
+Note: A Columb is 1 Farrad $\times$ volt.
+
+\paragraph{Changes in current.}  Membrane current is a measure of the number of charges per second that travel across the membrane.  Current is measured in amps -- 1 amp is 1 Columb per second:
+\[
+I = \frac{dQ}{dt}
+\]
+
+In order to compute the membrane current, we can take the time derivative of the equation for determining how much charge the membrane stores:
+\[
+C_m \frac{dV}{dt} = \frac{dQ}{dt} = I
+\]
+
+Example: suppose $C_m = 1$ nF.  Then injecting $I = 1$ nA of current causes the membrane voltage to rise by 1 volt per second (i.e., 1 mV per millisecond).
+
+\paragraph{Membrane current.}  There are two components of current ($I$).  The first is membrane current.  The membrane contains ion channels -- these let specific neurons through.  They can open and close.
+
+One type of channel is the sodium channel.  The inside of the cell contains fewer sodium ions than outside the cell.  When the sodium channels open, sodium (positively charged) flows into the cell and causes the membrane voltage to increase.  Diffusion of sodium and other ions (e.g. potassium) is called the membrane current, $I_{m}$.
+
+\paragraph{Driving force and the equilibrium potential.}  In addition
+to sodium being driven to flow down its concentration gradient, one
+can make it more or less difficult for sodium to enter the cell by
+changing the membrane voltage.  Because sodium is positively charged,
+decreasing, or \textit{hyperpolarizing}, the membrane voltage (inside
+relative to outside) will make sodium ions more likely to flow into
+the cell.  Conversly, increasing, or \textit{depolarizing}, the
+membrane voltage will make sodium ions less likely to flow into the
+cell.  The membrane potential at which net flow of an ion stops is
+called the equilibrium potential, $E$.  When $V > E$, positive ions
+flow out of the cell.  When $V < E$, positive ions flow into the cell.
+This means that $V$ is driven towards $E$.  Thus, we sometimes refer
+to the quantity $(V - E)$ as the \textit{driving force} across the
+cell membrane.  When the driving force is negative, positive ions are
+driven out of the cell.  When the driving force is positive, positive
+ions are pulled into the cell.
+
+\paragraph{External current.}  The second component of current is current that is injected into the neuron from external sources (e.g. if we stick an electrode into the neuron and pump in current).  
+
+The change in membrane voltage $V$ due to some change in current $I$ follows Ohm's Law:
+\[
+V = IR,
+\]
+where $R$ is the membrane resistance, described next.
+
+\paragraph{Membrane resistance.}  Ion channels are like little holes in the membrane.  They let ions pass through them -- i.e., they conduct ions.  A given unit area of membrane has some number of open channels, and we can measure the ease with which ions pass through those channels -- the specific conductance, $g_m$.  The total conducatance is proportional to the neuron's area:
+\[
+G_m = g_mA
+\]
+By convention, we tend to talk about the inverse of conductance, which is called resistance.  Whereas conductance is proportional to the surface area of the neuron, resistance is proportional to the inverse of the surface area of the neuron:
+\[
+R_m = \frac{r_m}{A}
+\]
+Note that the membrane resistance often changes as a function of voltage, which makes things interesting -- we'll get to this later.
+
+\paragraph{The Neuron Equation.}  Previously we had:
+\[
+C_m \frac{dV}{dt} = I,
+\]
+which we can update to reflect that $I$ is comprised of both membrane and external currents:
+\[
+C_m \frac{dV}{dt} = I_e + I_m.
+\]
+
+$I_m$ depends on the driving force $V - E$ and also difficulty with which ions flow through the membrane -- i.e., the membrane resistance, $R_m$.  In particular
+\[
+I_m = \frac{1}{R_m}(E - V)
+\]
+
+Note that the order of the $E$ and $V$ terms in the driving force have
+been swapped.  This is because the internal and external currents need
+to go in opposite directions.  We can multiply both sides of the equation by $R_m$ for convenience:
+\[
+C_mR_m\frac{dV}{dt} = R_mI_e + E - V
+\]
+
+Since $C_m = c_mA$ and $R_m = \frac{r_m}{A}$, the $A$'s cancel, and we get $c_mr_m$, which is independent of the cell's surface area.  Since $c_mr_m$ determines the rate at which the cell's membrane potential changes, it is given a special variable, $\tau_m$, or the membrane time constant.  \textbf{\em{The equation for all neuron models we'll see in this mini-course is}}:
+\[
+\tau_m\frac{dV}{dt} = R_mI_e + E - V
+\]
+
+
+\paragraph{$V_\infty$.}  From the above equation, we see that the
+change in membrane voltage is some fraction (proportional to $\tau_m$)
+of the difference between $R_mI_e + E$ and the current membrane
+voltage, $V$.  By this equation the membrane voltage approaches
+$R_mI_e + E$ over time.  For convenience we can define
+\[
+V_\infty = E + R_mI_e,
+\]
+where $V_\infty$ is the membrane voltage that will be reached given an
+external current and membrane resistance, and an infinite amount of time.  
+
+\paragraph{Resting potential.}  If you shut off the external current (i.e., set $I_e = 0$), then $V_\infty = E$.  For this reason, we call $E$ the resting potential of the cell -- the potential the cell approaches if we remove external forces.
+
+\paragraph{Computing the voltage at a particular time, $t$.}  We need to solve the following differential equation for $V$:
+\[
+\tau_m\frac{dV}{dt} = R_mI_e + E - V
+\]
+
+We know that, given enough time, $V$ tends towards $V_\infty$, so we can say that at time $t$:
+\[
+V(t) = V_\infty + f(t)
+\]
+
+Now we need to find $f(t)$ (we'll abbreviate $f(t)$ as $f$ for
+convenience).  We use the equation above, substituting in $V_\infty +
+f$ for $V$:
+\[
+\tau_m \frac{df}{dt} = R_mI_e + E - V_\infty - f
+\]
+
+Since $V_\infty = R_mI_e + E$, those terms cancel and we have:
+\[
+\tau_m \frac{df}{dt} = -f
+\]
+
+so
+\[
+\tau_m df = -fdt
+\]
+\[
+\tau_m\frac{df}{f} = -dt
+\]
+
+Now that we have the $f$'s and $t$'s on different sides of the equation, we can take the integral from 0 to $t$ of both sides:
+\[
+\int_{f(0)}^{f(t)} \tau_m \frac{df}{f} = \int_0^t -dt
+\]
+
+Solve the right hand side yields:
+\[
+\int_{f(0)}^{f(t)} \tau_m \frac{df}{f} = -t
+\]
+
+We can solve the left hand side using the rule $\int \frac{1}{x} dx = ln(x)$:
+
+\[
+\tau_m [ln(f(t)) - ln(f(0))] = -t
+\]
+\[
+\tau_m ln\frac{f(t)}{f(0)} = -t
+\]
+Now we can solve for $f(t)$:
+\[
+ln\frac{f(t)}{f(0)} = \frac{-t}{\tau_m}
+\]
+\[
+\frac{f(t)}{f(0)} = e^\frac{-t}{\tau_m}
+\]
+\[
+f(t) = f(0)e^\frac{-t}{\tau_m}
+\]
+Previously, we said that the voltage changes as a function of the
+distance between the voltage at the present time and $V_\infty$.  So
+$f(0) = V(0) - V_\infty$, and $f(t) = f(0)e^{\frac{-t}{\tau_m}}$.
+
+Plugging $f(t)$ back into the original equation gives:
+\[
+V(t) = V_\infty + f(t) = V_\infty + (V(0) - V_\infty) e^\frac{-t}{\tau_m}
+\]
+
+This gives us a way to compute how long it will take to charge up the neuron to an arbitrary voltage $V(t)$, by solving for $t$.
+
+\paragraph{Sanity checks.}  For $t = 0$, $e^\frac{-t}{\tau_m} = 1$, so we get:
+\[
+V(0) = V_\infty + V(0) - V_\infty = V(0)
+\]
+
+When $t$ is very large, $e^\frac{-t}{\tau_m}$ approaches 0, so $V(t)$ approaches $V_\infty$.
+
+
+
+
+\end{document}
+
+

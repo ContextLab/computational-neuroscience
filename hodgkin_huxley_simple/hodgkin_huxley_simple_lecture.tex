@@ -1,0 +1,153 @@
+\documentclass[11pt]{article}
+\usepackage{setspace}
+\usepackage{pxfonts}
+\usepackage{graphicx}
+\usepackage{geometry}
+
+\geometry{letterpaper,left=.5in,right=.5in,top=1in,bottom=.75in,headsep=5pt,footskip=20pt}
+
+\title{Lecture 4 -- Hodgkin-Huxley neuron model}
+\author{Computational Neuroscience Summer Program}
+\date{June, 2011}
+
+\begin{document}
+\maketitle
+
+\paragraph{Motivation.}  The integrate-and-fire model allows us to model spiking rates, but ignores the biophysical underpinnings of the action potential.  The Hodgkin-Huxley model, proposed by Alan Hodgkin and Andrew Huxley in 1952 explains how the action potential arises from ionic currents.  They won the Nobel Prize for this model in 1963, and their model is still taught today in neuroscience classes around the world.
+
+\paragraph{Recap.}  The model neuron equation we've been using is:
+\[
+\tau_m\frac{dV}{dt} = E - V + R_mI_e
+\]
+In this equation, all of the membrane biophysics are (implicitly) lumped into the $E - V$ term.  The $R_mI_e$ term represents how external currents affect the cell.  The basic idea of the Hodgkin-Huxley model is that we'll expand on the membrane biophysics portion of the equation by modeling ionic currents flowing through ion channels.  We'll consider two ions: sodium and potassium.  Before we fully explain the Hodgkin-Huxley model we'll review over some basic principles from physics and chemistry to gain a deeper understanding of the forces acting on ions inside and surrounding the cell.
+
+\paragraph{Diffusion.}  Imagine adding a drop of food coloring to a beaker of water.  The food coloring diffuses (``spreads out'') throughout the water uniformly.  This is because of principle 1: \textit{molecules flow down their concentration gradient.}
+
+\paragraph{Selective permeability.}  Let's add a barrier to our imaginary beaker.  If we drop some blue food coloring in the left side, it will spread throughout that side but won't spread to the right side.  Now suppose the barrier is permeable to red, but not to blue.  If we drop some red food coloring in either side, it will spread throughout the entire beaker, even though blue coloring is confined to the side it was dropped into.  Ion channels allow the cell's membrane to become selectively permeable to a single type of ion.
+
+\paragraph{Charges.}  Now let's suppose blue represents negatively charged ions and red represents positive charged ions.  Since opposite charges attract, we need to consider this force acting on the ions in addition to simple diffusion.  In particular, rather than spreading out evenly throughout the beaker, some of the red ions will be attracted over to the blue side.  This is because of principle 2: \textit{molecules flow down their charge gradient.}
+
+\paragraph{Energy required to transport ions across the membrane.} Membrane potentials are small, so ions are transported across the membrane by thermal fluccuations.  The thermal energy of an ion is $k_BT$, where $k_B$ is Boltzman's constant and $T$ is the temperature in degrees Kelvin.  Biologists and chemists typically like to think about moles of ions rather than single ions.  A mole of ions has Avagadro's number times as much energy as a single ion, or $RT$, where $R$ is the universal gas constant (8.31 Joules/mole $^\circ$K = 1.99 cal/mole $^\circ$K.  At normal temperatures, $RT \approx 2,500$ joules/mole, or 0.6 kCal/mole.
+
+We can compute the energy gained or lost when a mole of ions crosses the membrane with a potential difference $V_T$ across it.  This energy is equal to $FV_T$, where $F$ is Faraday's constant (F = 96,480 Columbs/mole), or Avagadro's number times the charge of a single proton, $q$.  Setting $FV_T = RT$ gives:
+\[
+V_T = \frac{RT}{F} = {k_BT}{q}
+\]
+
+\paragraph{Equilibrium potential.}  The \textit{Equilibrium potential} is the membrane voltage at which the net flow of a particular ion into or out of the cell is zero (i.e., the concentration gradient perfectly offsets the charge gradient).  If an ion has an electrical charge $zq$, it must have a thermal energy of at least $-zqV$ to cross the membrane (this quantity is positive for $z > 0$ and $V < 0$). The probability that an ion has a thermal energy greater than or equal to $-zqV$ when the temperature (degrees Kelvin) is $T$ is $e^\frac{zqV}{k_BT}$, which is determined by integrating the Boltzmann distribution for energies $\geq -zqV$.  In molar units, this can be written as:
+\[
+e^\frac{zFV}{RT}
+\]
+Then the concentration gradient offsets the charge gradient when
+\[
+\mathrm{[outside]} = \mathrm{[inside]}e^\frac{zFE}{RT}
+\]
+Where $E$ is the ``equilibrium potential'' -- the membrane potential at which the gradients cancel.  We can solve for $E$:
+\[
+\frac{\mathrm{[outside]}}{\mathrm{[inside]}} = e^\frac{zFE}{RT}
+\]
+\[
+ln(\frac{\mathrm{[outside]}}{\mathrm{[inside]}}) = \frac{zFE}{RT}
+\]
+\[
+E = \frac{RT}{zF}ln(\frac{\mathrm{[outside]}}{\mathrm{[inside]}})
+\]
+Plugging in the appropriate sodium and potassium concentrations, we find that $E_{K} \approx$ -70 to -90 mV and $E_{Na} \approx$ 50 mV.
+
+\paragraph{Reversal potential.}  When $V < E$, positive charges flow into the cell, causing the cell to depolarize (become more positive).  When $V > E$, positive charges flow out of the cell, causing it to hyperpolarize (become less positive).  Because $E$ is the membrane potential at which the direction of net current flow reverses, $E$ is also often called the \textit{reversal potential}.
+
+\paragraph{Resting potential.}  When no current is being pumped into the neuron, the equilibrium potentials of the different ions contained in the neuron and extracellular fluid all fight to bring the neuron's membrane voltage to their respective equilibrium potentials.  The ``strength'' with which each ion pulls the membrane potential towards its equilibrium potential is proportional to the permeability (``conductance'') of the the membrane to that ion, $g_i$ -- this depends on the number of open ion channels for that ion.  The resting membrane potential is equal to:
+\[
+V_{rest} = \frac{\sum_i (g_iE_i)}{\sum_i g_i}
+\]
+This is called the Goldman-Hodgkin-Katz equation.
+
+\paragraph{Intuition underlying the shape of the action potential.}  The key biophysical property of neurons that gives rise to the characteristic shape of the action potential is that the membrane's permeability to different ions depends on the membrane voltage.  During the rising phase of the action potential, sodium channels open quickly and potassium channels open slowly.  Since the sodium conductance outweighs the potassium conductance, we see from the Goldman-Hodgkin-Katz equation that the membrane voltage will head towards $E_{Na}$.  At the peak of the action potential, sodium channels become blocked, and the membrane becomes almost exclusively permeable to potassium -- so during the falling phase, the membrane plummets towards $E_K$.  Then some resetting happens, and the membrane potential returns to $V_{rest}$.  Now let's get into the details and the equations...
+
+\paragraph{Voltage-gated potassium channels.}  The voltage-gated potassium channel is comprised of four identical (independent) subunits.  For the channel to conduct potassium ions, all four subunits have to be in their open configuration.  The probability that a given potassium channel is open, $P_K$ is equal to the probability that a given subunit is open, $n$, raised to the fourth power:
+\[
+P_K = n^4
+\]
+Note that if $n$ is the probability that a given subunit is open, then $1-n$ is the probability that the subunit is closed.  
+
+The potassium channel subunits contain voltage sensors which make it more likely that the subunits will be open (activated) when the membrane is depolarized and less likely that the subunits will be open (deactivated) when the membrane is hyperpolarized.  Thus, we need to use (and update) the membrane voltage at each time $t$ in our calculations.
+
+Let's define an opening rate, $\alpha_n(V)$ and a closing rate, $\beta_n(V)$ for the Potassium channel subunits.  The probability that a subunit gate opens over a short interval of time is equal to the probability of finding the gate closed ($1-n$) multiplied by the opening rate, $\alpha_n(V)$.  Likewise, the probability that a subunit gate closes over a short interval of time is equal to the probability of finding the gate open ($n$) multiplied by the closing rate, $\beta_n(V)$.  The the rate at which the open probability for a subunit gate changes is given by the difference between these two terms:
+\[
+\frac{dn}{dt} =\alpha_n(V)(1-n) - \beta_n(V)n
+\]
+
+Another useful form of this equation is to divide through by the term $\alpha_n(V) + \beta_n(V)$:
+\[
+\tau_n(V)\frac{dn}{dt} = n_\infty(V) - n\mathrm{,~where}
+\]
+\[
+\tau_n = \frac{1}{\alpha_n(V) + \beta_n(V)}\mathrm{~and}
+\]
+\[
+n_\infty(V) = \frac{\alpha_n(V)}{\alpha_n(V) + \beta_n(V)}
+\]
+
+This equation indicates that for a given voltage, $V$, $n$ approaches the limiting value $n_\infty(V)$ exponentially with time constant $\tau_n$.  Hodgkin-Huxley found that the following rate functions fit their data:
+\[
+\alpha_n(V) = \frac{0.1(V + 55)}{1 - e^{-0.1(V+55)}}
+\]
+This function first increases gradually, and then increases approximately linearly.
+
+\[
+\beta_n(V) = 0.125e^{-0.0125(V+65)}
+\]
+This function decays exponentially towards zero.
+
+Since the membrane contains a very large number of potassium channels, the fraction of channels open at any given time is equal to $P_K = n^4$.  The membrane's ability to conduct potassum ($g_K$) is equal to $P_K$ times the membrane's maximal potassium conductance, $\bar{g}_K$.
+
+\paragraph{Voltage-gated sodium channels.} Voltage-gated sodium channels consist of three main subunits, each of which are open with probability $m$.  As with potassium channel subunits, sodium subunit opening and closing rates are given by $\alpha_m$ and $\beta_m$, respectively.  These subunits open (activate) quickly when the membrane is depolarized and close (inactivate) when the membrane is hyperpolarized.
+
+In addition to the three main subunits, the sodium channel contains a fourth subunit which has a negative charge, and is open with probability $h$.  When the cell is depolarized, the subunit gets attracted to the inside of the cell and blocks (``inactivates'') the channel.  In order to ``unblock'' the channel, the cell needs to be sufficiently hyperpolarized (past its normal resting potential).  The unblocking is called ``de-inactivation.''  The equations for $dm$ and $dh$ are identical to the equations for $dn$, but with $n$ replacing with $m$ or $h$.  The equations for $\alpha_m$ and $\beta_m$ are:
+
+\[
+\alpha_m(V) = \frac{0.1(V+40)}{1 - e^{-.1(V+40)}}
+\]
+\[
+\beta_m(V) = 4e^{-0.0556(V + 65)}
+\]
+(these are of the same form as the equations for $\alpha_n$ and $\beta_n$.  The equations for $\alpha_h$ and $\beta_h$ are:
+
+\[
+\alpha_h(V) = 0.07e^{-.05(V+65)}
+\]
+\[
+\beta_n(V) = \frac{1}{1 + e^{-.1(V+35)}}
+\]
+which are of the opposite form as for the $n$ and $m$ equations, since the $h$ subunit inactivates with depolarization and de-inactivates with hyperpolarization.
+
+Since the membrane contains a very large number of sodium channels, the fraction of channels open at any given time is equal to $P_{Na} = m^3h$.  The membrane's ability to conduct sodium ($g_{Na}$) is equal to $P_{Na}$ times the membrane's maximal Potassium conductance, $\bar{g}_{Na}$.
+
+\paragraph{Leak channels.}  The last type of channels in the Hodgkin-Huxley model is the leak channel.  Leak channels are always open, regardless of membrane voltage.  The total leak conductance is represented by $\bar{g}_L$.
+
+\paragraph{Derivation of full model.}
+For the integrate-and-fire model we used:
+\[
+\tau_m\frac{dV}{dt} = E - V + R_mI_e
+\]
+We can re-write as:
+\[
+c_mr_m\frac{dV}{dt} = (E - V) + \frac{r_m}{A}I_e
+\]
+Now we divide both sides by $r_m$:
+\[
+c_m\frac{dV}{dt} = \frac{1}{r_m}(E - V) + \frac{I_e}{A}
+\]
+
+The full model is of the form:
+\[
+c_m\frac{dV}{dt} = -i_m + \frac{I_e}{A},
+\]
+where
+\[
+i_m = \bar{g}_L(V - E_L) + g_K(V - E_K) + g_{Na}(V - E_{Na})
+\]
+This is simply the written-out form of the Goldman-Hodgkin-Katz equation.  As in the integrate-and-fire model, we start by solving for $dV$ and setting $V(t+dt) = V(t) + dV$ in each time step of the simulation.
+\end{document}
+
+

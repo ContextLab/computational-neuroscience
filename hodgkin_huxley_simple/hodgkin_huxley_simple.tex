@@ -1,0 +1,88 @@
+\documentclass[11pt]{article}
+\usepackage{setspace}
+\usepackage{pxfonts}
+\usepackage{graphicx}
+\usepackage{geometry}
+
+\geometry{letterpaper,left=.5in,right=.5in,top=0in,bottom=.75in,headsep=5pt,footskip=20pt}
+
+\title{Problem Set 4 -- Hodgkin-Huxley neuron model}
+\author{Computational Neuroscience Summer Program}
+\date{June, 2011}
+
+\begin{document}
+\maketitle
+
+In this problem set you will be building a Hodgkin-Huxley model neuron.  Write up your results in a text editor of your choosing.  Include any relevant figures.  Include a printout of your Matlab code as well as any calculations that aren't in the code.  You may work individually or in groups, but each student should hand in their own report.
+
+\subsection*{Equations}
+
+\begin{center}
+\begin{tabular}{l|l|l}
+$\tau_x(V)\frac{dx}{dt} = x_\infty(V) - x$ & $\tau_x(V) =
+\frac{1}{\alpha_x(V) + \beta_x(V)}$ & $x_\infty(V) =
+\frac{\alpha_x(V)}{\alpha_x(V) + \beta_x(V)}$ \\
+\hline
+$\alpha_n(V) = \frac{0.01(V+55)}{1 - exp(-.1(V+55))}$ &
+$\alpha_m(V) = \frac{0.1(V+40)}{1 - exp(-.1(V+40))}$ &
+$\alpha_h(V) = 0.07*exp(-.05(V+65))$\\ 
+\hline
+$\beta_n(V) = 0.125*exp(-0.0125(V+65))$ &
+$\beta_m(V) = 4*exp(-.0556(V+65))$ &
+$\beta_h(V) = \frac{1}{1 + exp(-.1(V+35))}$\\
+\hline
+$P_K = n^4$ & $P_{Na} = m^3h$ &\\
+\hline
+$g_K = \bar{g}_KP_K$ & $g_{Na} = \bar{g}_{Na}P_{Na}$ &\\
+
+\end{tabular}
+\end{center}
+
+\subsection*{Problems}
+
+\paragraph{1.} Build a Hodgkin-Huxley model using the following
+equation, in addition to those listed above:
+
+\[
+V(t+dt) = V(t) +\frac{\left[-i_m + \frac{I_{ext}}{A}\right]dt}{c_m},
+\]
+where
+\[
+i_m = \bar{g}_L(V(t) - E_L) + g_K(V(t) - E_K) + g_{Na}(V(t) - E_{Na}),
+\]
+and where $\bar{g}_L = 0.003$ mS/mm$^2$, $\bar{g}_K = 0.36$ mS/mm$^2$,
+$\bar{g}_{Na} = 1.2$ mS/mm$^2$, $E_L = -54.387$ mV, $E_K = -77$ mV,
+$E_{Na} = 50$ mV, and $c_m = 0.1$ nF/mm$^2$.  Set $V(0) = E = -65$ mV.  You should simulate a 15
+ms segment (use $dt \leq 0.01$ ms).  Pulse the neuron with a 5 nA/mm$^2$
+pulse between 5 and 8 ms in your simulation; this should result in a
+single action potential at between 5 and 10 ms.  Plot the $V$, $n$, $m$, and $h$
+as a function of time.  Congratulations --- you've just replicated a
+Nobel prize-worthy result!
+
+\paragraph{2.}  Explain what's happening in problem 1.  In particular:
+what do $V$, $n$, $m$, and $h$ mean in terms of the simulated neuron?
+Explain the relative time course of each of these variables.  How do
+$n$, $m$, and $h$ interact to produce $V$?
+
+\paragraph{3.}  Tetrodotoxin (TTX), a pufferfish-derived toxin, selectively blocks
+voltage-sensitive sodium channels, effectively setting $P_{Na} = 0$.
+Simulate the addition of TTX at $t = 0$ ms, and re-plot $V$, $n$, $m$,
+and $h$.  Does the neuron still fire an action potential?  Why or why
+not?
+
+\paragraph{4.}  Tetraethylammonium (TEA) selectively blocks
+voltage-sensitive potassum channels, effectively setting $P_{K} = 0$.
+Simulate the addition of TEA at $t = 0$ ms, and re-plot $V$, $n$, $m$,
+and $h$.  Does the neuron still fire an action potential?  Why or why
+not?  (Remember to remove TTX first!)
+
+\paragraph{5.  Challenge problem.}  How might you compute the firing rate of your
+Hodgkin-Huxley neuron?  Simulate a 1000 ms run with a pulse from
+250 to 750 ms, and measure how many spikes are fired.  Repeat this procedure for 10 pulse strengths between 0.01 and 10 nA.  Plot firing rate as a function of pulse strength.
+
+
+
+
+\end{document}
+
+

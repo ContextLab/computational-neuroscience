@@ -1,0 +1,102 @@
+\documentclass[11pt]{article}
+\usepackage{setspace}
+\usepackage{pxfonts}
+\usepackage{graphicx}
+\usepackage{geometry}
+
+\geometry{letterpaper,left=.5in,right=.5in,top=.5in,bottom=.75in,headsep=5pt,footskip=20pt}
+
+\title{Problem Set 4 -- Integrate-and-fire neuron, Part 2}
+\author{Computational Neuroscience Summer Program}
+\date{June, 2009}
+
+\begin{document}
+\maketitle
+
+\noindent Here you will add additional features to the integrate-and-fire neuron
+model to make it more realistic.  Start with your basic neuron model from the
+previous assignment using the same parameters and equations (i.e., specific
+membrane capacitance of $c_m = 10$ nF/mm\textsuperscript{2}, a specific membrane
+resistance of $r_m = 1$ M$\Omega\cdot$mm\textsuperscript{2}, a resting membrane
+potential of $E = -70$ mV, a reset potential of $V_{reset} = -80$ mV, an action
+potential threshold of $V_{threshold} = -55$ mV, and a cell surface area of
+0.025 mm\textsuperscript{2}).
+
+\subsection*{Equations}
+
+\begin{center}
+\begin{tabular}{ll}
+  $C_m = A \cdot c_m$ & $R_m = \frac{r_m}{A}$\tabularnewline
+  $\tau_m = c_m \cdot r_m$ & $V_\infty = E + R_mI_{ext}$\tabularnewline
+  $V(t) = V_\infty + (V(0) - V_\infty)e^\frac{-t}{\tau_m}$ & $r_{isi} =
+  (\tau_m \mathrm{ln}(\frac{R_mI_{ext} + E - V_{reset}}{R_mI_{ext} + E -
+    V_{threshold}}))^{-1}$\tabularnewline
+  $\tau_m\frac{dV}{dt} = E - V(t-1) + R_mI_{ext}$ & \tabularnewline
+\end{tabular}
+\end{center}
+
+\subsection*{Problems}
+
+\paragraph{1.  Spike-rate adaptation.}  When a standard neuron is injected with
+current, the rate at which it emits spikes decreases over time---a phenomenon
+called spike-rate adaptation.  Here we augment the basic integrate-and-fire
+model with a potassium (K) channel so that it exhibits this phemenon.  This
+equation describes the basic model:
+\[ \tau_m\frac{dV}{dt} = E - V +R_mI_{ext} -G_{sra}(V-E_K),\] which has a new
+additional term $-G_{sra}(V-E_K)$.  Here $G_{sra}$ indicates the
+spike-rate-adaptation conductance and $E_K$ indicates the reversal potential,
+$E_K=-70$.  In each iteration of the model, the spike-rate-adaptation
+conductance relaxes to zero exponentially with time constant $\tau_{rsa}$:
+\[\tau_{rsa}\frac{dG_{sra}}{dt}=-G_{sra}.\]  Whenever the neuron spikes, the
+conductance $G_{sra}$ increases by $\Delta G_{sra}$:
+\[G_{sra} \rightarrow G_{sra}+\Delta G_{sra}.\] When implementing this model,
+use values: $\Delta G_{sra}=0.03$ and $\tau_{sra}=200$~ms.
+
+Edit your integrate-and-fire model so that it implements this new spike-rate
+adaptation feature.  Simulate one second of this model where there is a square
+pulse at 0.4~nA from 250--750~ms.  Plot the output voltage $V$ and $G_{sra}$
+as a function of time (use \texttt{subplot} to put each one on a separate plot).
+Describe how the output of this model differs from the previous model that did
+not have spike-rate adaptation.
+
+\paragraph{2.  An absolute refractory period.}  Edit your standard integrate-and-fire model
+so that it has a refractory period that prevents it from firing two spikes
+within 5~ms of each other.  (To do this, have your model remember the timepoint
+of the previous spike.)  For a 3-nA current injection at 250--750~ms, compare
+this model's firing rate to a model that does not have a refractory period.  You
+should show a plot of each model's outputs (change the axis limits to make
+individual action potentials clear) and also compare the model's overall firing
+rates.
+
+Plot the mean firing of this model to 500-ms current pulses varying from in
+amplitude 0 to 20 nA.  Describe this curve's shape.  Can you identify the
+relation between this curve's shape and the model's parameters?
+
+\paragraph{3.  A relative refractory period using the SRA equation.}
+Rather than remembering the time of the last spike, can you use the spike-rate
+adaptation equation to model a neuron that has a refractory period of
+approximately 5 ms?  Hint: you'll use the same equation as in Question 1 but use
+different values of the constants $\Delta G_{sra}$ and $\tau_{sra}$.
+
+Test your model by plotting the membrane voltage of a cell in response to a
+20-ms current pulse at 10 nA.  (A standard model without a refractory period
+should emit approximately 20--25 spikes in response to this pulse).  Plot the output
+of your model with a refractory period in response to this pulse, and report the
+number of spikes that were emitted.  What parameters parameters did you use to
+achieve this result?
+
+
+\paragraph{4.  Challenge problem: oscillatory input.}  Use your spike-rate
+adaptation with these parameters: $\Delta G_{sra}=3$ and $\tau_{sra}=50$~ms.
+Rather than a square wave, stimulate this cell with an input current that
+oscillates (i.e., a sine wave) between 0 and .5~nA at 10~Hz.  Using
+\texttt{subplot}, plot the input current and the model's output on the same
+timescale.
+
+Next, simulate this model for various oscillating inputs ranging in frequencies
+from 1~Hz to 50~Hz.  Plot the model's mean firing rate as a function
+of firing rate.  Describe how the shape of this curve is controlled by the
+model.
+
+\end{document}
+
