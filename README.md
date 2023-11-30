@@ -1,3 +1,5 @@
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.10235877.svg)](https://doi.org/10.5281/zenodo.10235877)
+
 # Overview
 
 This repository contains materials for a short MATLAB and computational neuroscience course, taught at the University of Pennsylvania during the summers of 2009, 2010, and 2011.
